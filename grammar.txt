@@ -1,0 +1,59 @@
+Grammar for MINI-L Language
+
+Format:
+  (terminals)
+  [non-terminals]
+  [starting production*]
+  {epsilon} # means nothing
+
+Program:
+  [input*]                ->  (program) (identifier) (;) [block] (endprogram)
+
+Block:
+  [block]                 ->  [declarationlist] (beginprogram) [statementlist]
+  [declarationlist]       ->  [declaration] (;) [declarationlist] | [declaration] (;)
+  [statementlist]         ->  [statement] (;) [statementlist] | [statement] (;)
+
+Declaration:
+  [declaration]           ->  [identifierlist] (:) (integer) | [identifierlist] (:) (array) ([) (number) (]) (of) (integer)
+  [identifierlist]        ->  (identifier) (,) [identifierlist] | (identifier)
+
+Statement:
+  [statement]             ->  [statement1] | [statement2] | [statement3] | [statement4] | [statement5]  
+  [statement1]            ->  [var] (:=) [statement1or]
+  [statement1or]          ->  [expression] | [bool_exp] (?) [expression] (:) [expression]
+  [statement2]            ->  (if) [bool_exp] (then) [statmentlist] [statement2or]
+  [statement2or]          ->  (else) [statementlist] (endif) | (endif)
+  [statement3]            ->  (while) [bool_exp] (loop) [statementlist] (endloop)
+  [statement4]            ->  (read) [varlist]
+  [statement5]            ->  (write) [varlist]
+  [varlist]               ->  [var] (,) [varlist] | [var]
+
+Bool_Exp:
+  [bool_exp]              ->  [relation_exp] [relation_explist]
+  [relation_explist]      ->  [and/or] [relation_exp] [relation_explist] | {epsilon}
+  [and/or]                ->  (and) | (or)
+
+Relation_Exp:
+  [relation_exp]          ->  [relation_exp1] | [relation_exp2] | [relation_exp3] 
+  [relation_exp1]         ->  [expression] [comp] [expression] | (not) [expression] [comp] [expression]
+  [relation_exp2]         ->  (true) | (not) (true)
+  [relation_exp3]         ->  (false)| (not) (false)
+
+Comp:
+  [comp]                  ->  (=) | (!=) | (<) | (>) | (<=) | (>=)
+
+Expression:
+  [expression]            ->  [minuslist] [term] [termlist]
+  [minuslist]             ->  (-) [minuslist] | {epsilon}
+  [termlist]              ->  (-) [term] [termlist] | (+) [term] [termlist] | {epsilon}
+
+Term:
+  [term]                  ->  [factor] [factorlist]
+  [factorlist]            ->  (*) [factor] [factorlist] | (/) [factor] [factorlist] | {epsilon}
+
+Factor:
+  [factor]                ->  [var] | (number) | (() [expression] ())
+
+Var:
+  [var]                   ->  (identifier) | (identifier) ([) [expression] (])
